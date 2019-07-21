@@ -6,6 +6,7 @@ from pygame.sprite import Group
 from background import Background
 from alien import Alien
 
+
 def run_game():
     """initialize the game and create a screen object with settings"""
     pygame.init()
