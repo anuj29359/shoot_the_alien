@@ -16,7 +16,7 @@ def run_game():
     screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height))
     pygame.display.set_caption(ai_settings.screen_title)
 
-    # create background
+    # use background image
     bg = Background(ai_settings, screen)
     # create a ship object
     ship = Ship(screen, ai_settings)
