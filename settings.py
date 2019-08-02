@@ -34,12 +34,12 @@ class Settings:
                               '40x': 40,
                               '50x': 50}
         # speed of ship movement to left / right
-        self.ship_speed = self.speed_factors['2x']
+        self.ship_speed = self.speed_factors['3x']
         self.step_size = self.ship_speed
         self.step_size_diagonal = self.ship_speed * 0.9
 
         # bullet settings
-        self.bullet_width = 200
+        self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_width_large = 8  # for cannon
         self.bullet_speed = self.speed_factors['20x']
@@ -49,12 +49,17 @@ class Settings:
         self.bullet_limit = 4
 
         # Alien x-movement speed
-        self.alien_speed = self.speed_factors['1x']
+        self.alien_speed = self.speed_factors['2x']
 
         # fleet drop speed
-        self.fleet_drop_speed = self.speed_factors['5x']
+        self.fleet_space_factor = 2
+        self.fleet_drop_speed = self.speed_factors['20x']
         # Fleet direction = 1 for moving right and Fleet direction = -1 for moving left
         self.fleet_direction = 1
 
         # enable or disable printing logs
-        self.print_logs = False
+        self.print_logs = True
+
+        # set the number of times a ship can respawn
+        self.life_limit = 5
+        self.available_life = self.life_limit

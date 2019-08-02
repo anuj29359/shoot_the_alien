@@ -2,7 +2,9 @@ import pygame
 import sys
 from bullet import Bullet
 from alien import Alien
-
+from time import sleep
+from explosion import Explosion
+from data import Data
 
 def fire_bullet(bullets,ai_settings,ship, screen):
     if len(bullets) < ai_settings.bullet_limit:
@@ -48,7 +50,7 @@ def check_events(ship, ai_settings, bullets, screen):
         # Exit the game screen when clicked on the cross button
         if event.type == pygame.QUIT:
             if ai_settings.print_logs:
-                print('Closed the game window ny clicking on the cross button')
+                print('Closed the game window by clicking on the cross button')
             sys.exit()
         # set the flag to move ship to the right or left
         elif event.type == pygame.KEYDOWN:
@@ -78,7 +80,7 @@ def update_screen(screen, ship, ai_settings, bullets , aliens, bg):
     pygame.display.flip()
 
 
-def update_bullet(bullets, ai_settings, aliens, screen, ship):
+def update_bullet(bullets, ai_settings, aliens, screen, ship, explosions):
     """move the bullets upward and kill it after it has crossed the top og the screen"""
     for bullet in bullets.sprites():
         bullet.update()
@@ -90,6 +92,13 @@ def update_bullet(bullets, ai_settings, aliens, screen, ship):
             bullets.remove(bullet)
     # checks the collision between a bullet and a alien an remove the bullet/alien from their Sprite Group
     collision = check_collision_alien_bullet(bullets, aliens)
+    if collision:
+        for k,v in collision.items():
+
+            print(k,v)
+    #if collision:
+    #    explosion = Explosion('sm', )
+
     # Create a new fleet after all the aliens have been destroyed
     create_new_fleet(aliens, bullets, ai_settings, screen, ship)
 
@@ -100,7 +109,7 @@ def check_collision_alien_bullet(bullets, aliens):
 
 def get_number_aliens_x(ai_settings, alien_width):
     """find the number of aliens in one row"""
-    alien_cnt_per_row = (ai_settings.screen_width - 2 * alien_width) // (2 * alien_width)
+    alien_cnt_per_row = (ai_settings.screen_width - 2 * alien_width * ai_settings.fleet_space_factor) // (2 * alien_width)
     return alien_cnt_per_row
 
 def get_number_rows(ai_settings, alien_height, ship_height):
@@ -151,9 +160,19 @@ def change_fleet_direction(ai_settings, aliens):
         alien.rect.y += ai_settings.fleet_drop_speed
     ai_settings.fleet_direction *= -1
 
-def update_aliens(ai_settings, aliens):
+def update_aliens(ship,ai_settings, aliens, bullets, game_data):
     check_fleet_edge(ai_settings, aliens)
+
     aliens.update()
+    if check_alien_hit_bottom(aliens, ai_settings):
+        ship_hit(ship, aliens, ai_settings, bullets, game_data)
+
+    # ship hits an alien
+    # then remove the alien from the fleet and set the position of the ship HOME
+    if pygame.sprite.spritecollideany(ship, aliens):
+        aliens.remove(pygame.sprite.spritecollideany(ship, aliens))
+        ship_hit(ship, aliens, ai_settings, bullets, game_data)
+        print('Ship hit!!')
 
 
 def create_new_fleet(aliens, bullets, ai_settings, screen, ship):
@@ -161,6 +180,40 @@ def create_new_fleet(aliens, bullets, ai_settings, screen, ship):
     if len(aliens) == 0:
         bullets.empty()
         create_alien_fleet(ai_settings, screen, aliens, ship)
+
+
+def ship_hit(ship, aliens, ai_settings, bullets ,game_data):
+    """respawn the ship whn it its an alien"""
+
+
+    # reduce the number of available lives
+    ai_settings.available_life -= 1
+
+    # kill all the bullets
+    bullets.empty()
+
+    # if all the ship lives are nt used then respawn the ship
+    if ai_settings.available_life > 0:
+        ship.center_ship()
+    else:
+        game_data.is_game_active = False
+
+    # pause
+    sleep(0.5)
+
+
+def check_alien_hit_bottom(aliens, ai_settings):
+    """check if the alien has hit the bttom of the screen"""
+    for alien in aliens:
+        if alien.rect.bottom >= ai_settings.screen_height:
+            #  print("fn : check_alien_hit_bottom | alien bottom coordinates" + str(alien.rect.bottom))
+            if ai_settings.print_logs:
+                print("fn : check_alien_hit_bottom | alien bottom coordinates" + str(alien.rect.bottom))
+            aliens.remove(alien)
+            return True
+
+
+
 
 
 

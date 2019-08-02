@@ -22,6 +22,10 @@ class Ship:
             self.rect.centerx = self.screen_rect.centerx
             self.ship_x = float(self.rect.centerx)
             self.ship_y = float(self.rect.bottom)
+
+            # load ship explosion sound
+            self.ship_explosion_sound = pygame.mixer.Sound('sound/Explosion1.wav')
+
         except FileNotFoundError or FileExistsError:
             print('File : "{0}", not found'.format(image_file_location))
 
@@ -50,7 +54,7 @@ class Ship:
                 self.ship_y += ai_settings.step_size_diagonal
                 self.rect.bottom = self.ship_y
             if self.rect.centerx < ai_settings.screen_width:
-                self.ship_x+= ai_settings.step_size_diagonal
+                self.ship_x += ai_settings.step_size_diagonal
                 self.rect.centerx = self.ship_x
             else:
                 self.ship_x = self.rect.centerx = 0
@@ -132,6 +136,18 @@ class Ship:
             else:
                 if ai_settings.print_logs:
                     print("Its the bottom most surface the ship can go.")
+        # check for the collision with an alien
+        # if pygame.sprite.spritecollideany(self, aliens):
+        #    print('Ship hit!!')
+
+    def center_ship(self):
+        self.rect.centerx = self.screen_rect.centerx
+        self.rect.bottom = self.screen_rect.bottom
+        self.ship_x = float(self.rect.centerx)
+        self.ship_y = float(self.rect.bottom)
+        print(self.rect.centerx, self.rect.bottom, self.ship_x, self.ship_y)
+        #play explosion sound
+        self.ship_explosion_sound.play()
 
     def blitme(self):
         """drew the ship at its current location"""

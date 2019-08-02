@@ -49,3 +49,4 @@ class Alien(Sprite):
             print(str(self.n) + '. - 2 value of self.x is : ' + str(self.x) + ' rect.x is ' + str(self.rect.x))
             print('Alien_Speed is : ' + str(self.ai_settings.alien_speed))
 
+

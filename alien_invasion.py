@@ -4,7 +4,8 @@ from ship import Ship
 import game_functions as gf
 from pygame.sprite import Group
 from background import Background
-from alien import Alien
+from data import Data
+from explosion import Explosion
 
 
 def run_game():
@@ -30,16 +31,28 @@ def run_game():
     bullets = Group()
     # create fleet of alien
     gf.create_alien_fleet(ai_settings, screen, aliens, ship)
+
+    # create an instance of the game data class
+    game_data = Data(ai_settings)
+
+    # create explosion instance
+    explosions = Group()
+
+
+
     # start the main loop for the game
     while True:
         # watch for keyboard and mouse event.
         gf.check_events(ship, ai_settings, bullets, screen)
-        # move ship to the left/right as per the events
-        Ship.move_ship(ship, ai_settings)
-        # update bullet position
-        gf.update_bullet(bullets, ai_settings, aliens, screen, ship)
-        gf.update_aliens(ai_settings, aliens)
-        # update screen as per the events
-        gf.update_screen(screen=screen, ship=ship, ai_settings=ai_settings, bullets=bullets, aliens=aliens, bg=bg)
+
+        if game_data.is_game_active == True:
+            """Check the status of is_game_active flag to determine when to end the game"""
+            # move ship to the left/right as per the events
+            Ship.move_ship(ship, ai_settings)
+            # update bullet position and check for hitting an alien
+            gf.update_bullet(bullets, ai_settings, aliens, screen, ship, explosions)
+            gf.update_aliens(ship, ai_settings, aliens, bullets, game_data)
+            # update screen as per the events
+            gf.update_screen(screen=screen, ship=ship, ai_settings=ai_settings, bullets=bullets, aliens=aliens, bg=bg)
 
 run_game()
