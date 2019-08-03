@@ -45,7 +45,7 @@ def run_game():
     # start the main loop for the game
     while True:
         # watch for keyboard and mouse event.
-        gf.check_events(ship, ai_settings, bullets, screen)
+        gf.check_events(ship, ai_settings, bullets, screen, game_data, play_button)
 
         if game_data.is_game_active == True:
             """Check the status of is_game_active flag to determine when to end the game"""
@@ -53,8 +53,8 @@ def run_game():
             Ship.move_ship(ship, ai_settings)
             # update bullet position and check for hitting an alien
             gf.update_bullet(bullets, ai_settings, aliens, screen, ship, explosions)
-            gf.update_aliens(ship, ai_settings, aliens, bullets, game_data)
-            # update screen as per the events
-            gf.update_screen(screen=screen, ship=ship, ai_settings=ai_settings, bullets=bullets, aliens=aliens, bg=bg, play_button=play_button)
+            gf.update_aliens(ship, ai_settings, aliens, bullets, game_data, screen)
+        # update screen as per the events
+        gf.update_screen(screen=screen, ship=ship, ai_settings=ai_settings, bullets=bullets, aliens=aliens, bg=bg, play_button=play_button, game_data=game_data)
 
 run_game()

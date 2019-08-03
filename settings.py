@@ -58,7 +58,7 @@ class Settings:
         self.fleet_direction = 1
 
         # enable or disable printing logs
-        self.print_logs = True
+        self.print_logs = False
 
         # set the number of times a ship can respawn
         self.life_limit = 5
