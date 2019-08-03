@@ -6,6 +6,8 @@ from time import sleep
 from explosion import Explosion
 from data import Data
 
+
+
 def fire_bullet(bullets,ai_settings,ship, screen):
     if len(bullets) < ai_settings.bullet_limit:
         new_bullet = Bullet(ship, screen, ai_settings)
@@ -61,12 +63,14 @@ def check_events(ship, ai_settings, bullets, screen):
         elif event.type == pygame.KEYUP:
             check_keyup_event(event, ship)
 
-def update_screen(screen, ship, ai_settings, bullets , aliens, bg):
+def update_screen(screen, ship, ai_settings, bullets , aliens, bg, play_button):
     """update the screen based on the events and settings"""
     # set the background color of the screen
     bg.blitme()
     #screen.fill(ai_settings.bg_color)
 
+    #  display the play button
+    play_button.draw_button()
     # add ship to the game screen
     ship.blitme()
     aliens.draw(screen)

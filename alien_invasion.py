@@ -6,7 +6,7 @@ from pygame.sprite import Group
 from background import Background
 from data import Data
 from explosion import Explosion
-
+from button import Button
 
 def run_game():
     """initialize the game and create a screen object with settings"""
@@ -38,7 +38,9 @@ def run_game():
     # create explosion instance
     explosions = Group()
 
-
+    # create button object to start the game
+    msg = 'Start'
+    play_button = Button(screen, ai_settings, game_data, msg)
 
     # start the main loop for the game
     while True:
@@ -53,6 +55,6 @@ def run_game():
             gf.update_bullet(bullets, ai_settings, aliens, screen, ship, explosions)
             gf.update_aliens(ship, ai_settings, aliens, bullets, game_data)
             # update screen as per the events
-            gf.update_screen(screen=screen, ship=ship, ai_settings=ai_settings, bullets=bullets, aliens=aliens, bg=bg)
+            gf.update_screen(screen=screen, ship=ship, ai_settings=ai_settings, bullets=bullets, aliens=aliens, bg=bg, play_button=play_button)
 
 run_game()
