@@ -181,18 +181,18 @@ def change_fleet_direction(ai_settings, aliens):
         alien.rect.y += ai_settings.fleet_drop_speed
     ai_settings.fleet_direction *= -1
 
-def update_aliens(ship,ai_settings, aliens, bullets, game_data):
+def update_aliens(ship,ai_settings, aliens, bullets, game_data, screen):
     check_fleet_edge(ai_settings, aliens)
 
     aliens.update()
     if check_alien_hit_bottom(aliens, ai_settings):
-        ship_hit(ship, aliens, ai_settings, bullets, game_data)
+        ship_hit(ship, aliens, ai_settings, bullets, game_data, screen)
 
     # ship hits an alien
     # then remove the alien from the fleet and set the position of the ship HOME
     if pygame.sprite.spritecollideany(ship, aliens):
         aliens.remove(pygame.sprite.spritecollideany(ship, aliens))
-        ship_hit(ship, aliens, ai_settings, bullets, game_data)
+        ship_hit(ship, aliens, ai_settings, bullets, game_data, screen)
         print('Ship hit!!')
 
 
@@ -203,7 +203,7 @@ def create_new_fleet(aliens, bullets, ai_settings, screen, ship):
         create_alien_fleet(ai_settings, screen, aliens, ship)
 
 
-def ship_hit(ship, aliens, ai_settings, bullets ,game_data):
+def ship_hit(ship, aliens, ai_settings, bullets , game_data, screen):
     """respawn the ship whn it its an alien"""
 
 
@@ -217,6 +217,9 @@ def ship_hit(ship, aliens, ai_settings, bullets ,game_data):
     if ai_settings.available_life > 0:
         ship.center_ship()
     else:
+        bullets.empty()
+        aliens.empty()
+        create_new_fleet(aliens, bullets, ai_settings, screen, ship)
         game_data.is_game_active = False
 
     # pause
