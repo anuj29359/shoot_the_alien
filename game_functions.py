@@ -19,7 +19,7 @@ def fire_bullet(bullets,ai_settings,ship, screen):
             print('Speed of bullet is : ' + str(new_bullet.bullet_speed))
 
 
-def check_keydown_event(event, ship, screen, ai_settings, bullets):
+def check_keydown_event(event, ship, screen, ai_settings, bullets, game_data):
     """check which key has been pressed and then act accordingly to move the ship or fire bullet"""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -29,9 +29,14 @@ def check_keydown_event(event, ship, screen, ai_settings, bullets):
         ship.moving_up = True
     if event.key == pygame.K_DOWN:
         ship.moving_down = True
-
+    #  fire the bullet
     if event.key == pygame.K_SPACE:
         fire_bullet(bullets, ai_settings, ship, screen)
+
+    #  pause the game
+    if event.key == pygame.K_p:
+        print("Game Paused! ")
+        game_data.is_game_active = False
 
 
 def check_keyup_event(event, ship):
@@ -46,7 +51,7 @@ def check_keyup_event(event, ship):
         ship.moving_down = False
 
 
-def check_events(ship, ai_settings, bullets, screen):
+def check_events(ship, ai_settings, bullets, screen, game_data, play_button):
     """check the keyboard or mouse input and respond"""
     for event in pygame.event.get():
         # Exit the game screen when clicked on the cross button
@@ -58,22 +63,34 @@ def check_events(ship, ai_settings, bullets, screen):
         elif event.type == pygame.KEYDOWN:
             if ai_settings.print_logs:
                 print('pressed the key: {0}'.format(event.key))
-            check_keydown_event(event=event, ship=ship, ai_settings=ai_settings, bullets=bullets, screen=screen)
+            check_keydown_event(event=event, ship=ship, ai_settings=ai_settings, bullets=bullets, screen=screen, game_data= game_data)
         # reset the moving left/right flag after the arrow key has been released
         elif event.type == pygame.KEYUP:
             check_keyup_event(event, ship)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(game_data, play_button, mouse_x, mouse_y)
 
-def update_screen(screen, ship, ai_settings, bullets , aliens, bg, play_button):
+
+def check_play_button(game_data, play_button, mouse_x, mouse_y):
+    """check if the play button is clicked or not, if yes then resume the game"""
+    if play_button.rect.collidepoint(mouse_x, mouse_y):
+        game_data.is_game_active = True
+
+def update_screen(screen, ship, ai_settings, bullets , aliens, bg, play_button, game_data):
     """update the screen based on the events and settings"""
     # set the background color of the screen
     bg.blitme()
     #screen.fill(ai_settings.bg_color)
 
-    #  display the play button
-    play_button.draw_button()
+
     # add ship to the game screen
     ship.blitme()
     aliens.draw(screen)
+
+    #  display the play button
+    if not game_data.is_game_active:
+        play_button.draw_button()
 
     # redraw all bullets behind ship
     # for bullet in bullets:
