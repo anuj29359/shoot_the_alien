@@ -36,7 +36,7 @@ def check_keydown_event(event, ship, screen, ai_settings, bullets, game_data):
     #  pause the game
     if event.key == pygame.K_p:
         print("Game Paused! ")
-        game_data.is_game_active = False
+        game_data.set_game_inactive()
 
 
 def check_keyup_event(event, ship):
@@ -63,7 +63,8 @@ def check_events(ship, ai_settings, bullets, screen, game_data, play_button):
         elif event.type == pygame.KEYDOWN:
             if ai_settings.print_logs:
                 print('pressed the key: {0}'.format(event.key))
-            check_keydown_event(event=event, ship=ship, ai_settings=ai_settings, bullets=bullets, screen=screen, game_data= game_data)
+            check_keydown_event(event=event, ship=ship, ai_settings=ai_settings, bullets=bullets, screen=screen,
+                                game_data=game_data)
         # reset the moving left/right flag after the arrow key has been released
         elif event.type == pygame.KEYUP:
             check_keyup_event(event, ship)
@@ -74,8 +75,9 @@ def check_events(ship, ai_settings, bullets, screen, game_data, play_button):
 
 def check_play_button(game_data, play_button, mouse_x, mouse_y):
     """check if the play button is clicked or not, if yes then resume the game"""
-    if play_button.rect.collidepoint(mouse_x, mouse_y):
-        game_data.is_game_active = True
+    if play_button.rect.collidepoint(mouse_x, mouse_y) and not game_data.is_game_active:
+        # if the button is clicked when the game is inactive
+        game_data.set_game_active()  # activate the game
 
 def update_screen(screen, ship, ai_settings, bullets , aliens, bg, play_button, game_data):
     """update the screen based on the events and settings"""
@@ -130,7 +132,7 @@ def check_collision_alien_bullet(bullets, aliens):
 
 def get_number_aliens_x(ai_settings, alien_width):
     """find the number of aliens in one row"""
-    alien_cnt_per_row = (ai_settings.screen_width - 2 * alien_width * ai_settings.fleet_space_factor) // (2 * alien_width)
+    alien_cnt_per_row = (ai_settings.screen_width - 2 * alien_width ) // (2 * alien_width)
     return alien_cnt_per_row
 
 def get_number_rows(ai_settings, alien_height, ship_height):
@@ -205,24 +207,25 @@ def create_new_fleet(aliens, bullets, ai_settings, screen, ship):
 
 def ship_hit(ship, aliens, ai_settings, bullets , game_data, screen):
     """respawn the ship whn it its an alien"""
-
-
     # reduce the number of available lives
-    ai_settings.available_life -= 1
-
+    game_data.ship_left -= 1
     # kill all the bullets
     bullets.empty()
-
     # if all the ship lives are nt used then respawn the ship
-    if ai_settings.available_life > 0:
+    if game_data.ship_left > 0:
         ship.center_ship()
     else:
+        # empty the bullets, kill all the aliens and then create a new alien fleet
         bullets.empty()
         aliens.empty()
         create_new_fleet(aliens, bullets, ai_settings, screen, ship)
-        game_data.is_game_active = False
+        #  bring the ship at its HOME position
+        ship.center_ship()
+        #  reset the game stat so that number of lives is reset to the max and inactive the game
+        game_data.reset_data()
+        game_data.set_game_inactive()
 
-    # pause
+    #  quick pause after the ship has been hit
     sleep(0.5)
 
 
