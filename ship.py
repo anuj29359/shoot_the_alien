@@ -1,10 +1,12 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Ship:
+
+class Ship(Sprite):
     """Ship class to dfine diffrent properties of the spaceship"""
     def __init__(self, screen, ai_settings):
         """initialise the ship display on the screen"""
-
+        super(Ship, self).__init__()
         self.screen = screen
         # get the screen rectangle dimension
         self.screen_rect = screen.get_rect()

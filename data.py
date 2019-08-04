@@ -1,4 +1,7 @@
 import pygame
+import json
+from scoreboard import Scoreboard
+
 
 class Data:
     """The class is to store game data"""
@@ -11,10 +14,12 @@ class Data:
         # start the game in inactive state
         self.is_game_active = False
 
-
     def reset_data(self):
         """reset the game data that can change during runtime"""
         self.ship_left = self.ai_settings.life_limit
+        self.score = 0
+
+
 
     def set_game_inactive(self):
         """set the flag is_game_active = False and dont display the cursor on the game screen"""

@@ -7,7 +7,7 @@ from background import Background
 from data import Data
 from explosion import Explosion
 from button import Button
-
+from scoreboard import Scoreboard
 def run_game():
     """initialize the game and create a screen object with settings"""
     pygame.init()
@@ -42,19 +42,23 @@ def run_game():
     msg = 'Start'
     play_button = Button(screen, ai_settings, game_data, msg)
 
+    # Create scoreboard instance
+    scoreboard = Scoreboard(screen, ai_settings, ship, aliens, bullets, game_data)
+
     # start the main loop for the game
     while True:
         # watch for keyboard and mouse event.
-        gf.check_events(ship, ai_settings, bullets, screen, game_data, play_button)
+        gf.check_events(ship, ai_settings, bullets, screen, game_data, play_button, scoreboard)
 
         if game_data.is_game_active == True:
             """Check the status of is_game_active flag to determine when to end the game"""
             # move ship to the left/right as per the events
             Ship.move_ship(ship, ai_settings)
             # update bullet position and check for hitting an alien
-            gf.update_bullet(bullets, ai_settings, aliens, screen, ship, explosions)
-            gf.update_aliens(ship, ai_settings, aliens, bullets, game_data, screen)
+            gf.update_bullet(bullets, ai_settings, aliens, screen, ship, explosions, game_data, scoreboard)
+            gf.update_aliens(ship, ai_settings, aliens, bullets, game_data, screen, scoreboard)
         # update screen as per the events
-        gf.update_screen(screen=screen, ship=ship, ai_settings=ai_settings, bullets=bullets, aliens=aliens, bg=bg, play_button=play_button, game_data=game_data)
+        gf.update_screen(screen=screen, ship=ship, ai_settings=ai_settings, bullets=bullets, aliens=aliens, bg=bg,
+                         play_button=play_button, game_data=game_data, scoreboard=scoreboard)
 
 run_game()

@@ -44,6 +44,7 @@ class Explosion(Sprite):
             img_lg = pygame.transform.scale(img_explosion, (75, 75))
             self.explosion_anim['lg'].append(img_lg)
 
+
             #transform the image size to 35x35 px and append it to the list of small images
             img_lg = pygame.transform.scale(img_explosion, (35, 35))
             self.explosion_anim['sm'].append(img_lg)
