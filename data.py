@@ -17,13 +17,13 @@ class Data:
         self.ship_left = self.ai_settings.life_limit
 
     def set_game_inactive(self):
-        """set the flag is_game_active = False and hide the cursor"""
+        """set the flag is_game_active = False and dont display the cursor on the game screen"""
         self.is_game_active = False
         # show the mouse cursor
         pygame.mouse.set_visible(True)
 
     def set_game_active(self):
-        """set the flag is_game_active = False and hide the cursor"""
+        """set the flag is_game_active = True and show the cursor"""
         self.is_game_active = True
         # show the mouse cursor
         pygame.mouse.set_visible(False)
