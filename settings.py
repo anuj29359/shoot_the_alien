@@ -39,7 +39,7 @@ class Settings:
         self.step_size_diagonal = self.ship_speed * 0.9
 
         # bullet settings
-        self.bullet_width = 300
+        self.bullet_width = 3
         self.bullet_height = 15
         self.bullet_width_large = 8  # for cannon
         self.bullet_speed = self.speed_factors['20x']
@@ -53,7 +53,7 @@ class Settings:
 
         # fleet drop speed
         self.fleet_space_factor = 2
-        self.fleet_drop_speed = self.speed_factors['5x']
+        self.fleet_drop_speed = self.speed_factors['3x']
         # Fleet direction = 1 for moving right and Fleet direction = -1 for moving left
         self.fleet_direction = 1
 
@@ -61,7 +61,7 @@ class Settings:
         self.print_logs = False
 
         # set the number of times a ship can re-spawn
-        self.life_limit = 5
+        self.life_limit = 4
 
         # data file location
         self.data_file_location = 'data.json'
