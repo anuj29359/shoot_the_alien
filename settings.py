@@ -66,4 +66,7 @@ class Settings:
         # data file location
         self.data_file_location = 'data.json'
 
+        # button message
+        self.msg = 'Start'
+
 
