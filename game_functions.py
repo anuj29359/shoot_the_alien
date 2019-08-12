@@ -47,7 +47,7 @@ def check_keyup_event(event, ship):
         ship.moving_down = False
 
 
-def check_events(ship, ai_settings, bullets, screen, game_data, play_button, scoreboard):
+def check_events(aliens, ship, ai_settings, bullets, screen, game_data, play_button, scoreboard):
     """check the keyboard or mouse input and respond"""
     for event in pygame.event.get():
         # Exit the game screen when clicked on the cross button
@@ -66,15 +66,22 @@ def check_events(ship, ai_settings, bullets, screen, game_data, play_button, sco
             check_keyup_event(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(game_data, play_button, mouse_x, mouse_y, scoreboard)
+            check_play_button(ship, aliens, ai_settings, bullets,screen, game_data, play_button, mouse_x, mouse_y, scoreboard)
 
 
-def check_play_button(game_data, play_button, mouse_x, mouse_y, scoreboard):
+def check_play_button(ship, aliens, ai_settings, bullets,screen, game_data, play_button, mouse_x, mouse_y, scoreboard):
     """check if the play button is clicked or not, if yes then resume the game"""
     if play_button.rect.collidepoint(mouse_x, mouse_y) and not game_data.is_game_active:
-        # if the button is clicked when the game is inactive
-        scoreboard.prep_remaining_ships()
-        game_data.set_game_active()  # activate the game
+        # check if the game is over then restart the game
+        if game_data.is_game_over and ai_settings.msg != 'Start':
+            restart_game(ship, aliens, ai_settings, bullets, game_data, screen)
+        if game_data.is_game_over and ai_settings.msg == 'Start':
+            game_data.set_game_active()
+        # if the button is clicked when the game is inactive but not over
+        if not game_data.is_game_over:
+            scoreboard.prep_remaining_ships()
+            game_data.set_game_active()  # activate the game
+
 
 
 def update_screen(screen, ship, ai_settings, bullets , aliens, bg, play_button, game_data, scoreboard):
@@ -95,6 +102,7 @@ def update_screen(screen, ship, ai_settings, bullets , aliens, bg, play_button, 
 
     #  display the play button
     if not game_data.is_game_active:
+        play_button.prep_msg(ai_settings.msg)
         play_button.draw_button()
 
     # redraw all bullets behind ship
@@ -201,7 +209,7 @@ def update_aliens(ship,ai_settings, aliens, bullets, game_data, screen, scoreboa
     if pygame.sprite.spritecollideany(ship, aliens):
         aliens.remove(pygame.sprite.spritecollideany(ship, aliens))
         ship_hit(ship, aliens, ai_settings, bullets, game_data, screen, scoreboard)
-        print('Ship hit!!')
+
 
 
 def create_new_fleet(aliens, bullets, ai_settings, screen, ship):
@@ -210,11 +218,22 @@ def create_new_fleet(aliens, bullets, ai_settings, screen, ship):
         bullets.empty()
         create_alien_fleet(ai_settings, screen, aliens, ship)
 
+def restart_game(ship, aliens, ai_settings, bullets , game_data, screen):
+    """restart the game"""
+    create_new_fleet(aliens, bullets, ai_settings, screen, ship)
+    #  bring the ship at its HOME position
+    ship.center_ship()
+    #  reset the game stat so that number of lives is reset to the max and inactive the game
+    game_data.reset_data()
+    ai_settings.msg = 'Start'
+
 
 def ship_hit(ship, aliens, ai_settings, bullets , game_data, screen, scoreboard):
     """respawn the ship whn it its an alien"""
     # reduce the number of available lives
     game_data.ship_left -= 1
+    #play explosion sound
+    ship.ship_explosion_sound.play()
     # kill all the bullets
     bullets.empty()
     # if all the ship lives are nt used then respawn the ship
@@ -223,22 +242,20 @@ def ship_hit(ship, aliens, ai_settings, bullets , game_data, screen, scoreboard)
         scoreboard.prep_remaining_ships()
 
     else:
+        game_data.is_game_over = True
+        game_data.set_game_inactive()
         # empty the bullets, kill all the aliens and then create a new alien fleet
         bullets.empty()
         aliens.empty()
-        create_new_fleet(aliens, bullets, ai_settings, screen, ship)
-        #  bring the ship at its HOME position
-        ship.center_ship()
-        #  reset the game stat so that number of lives is reset to the max and inactive the game
-        game_data.reset_data()
-        game_data.set_game_inactive()
+        ai_settings.msg = 'Game over! click the button to restart'
+        print('game_data.is_game_over' + str(game_data.is_game_over))
 
     #  quick pause after the ship has been hit
     sleep(0.5)
 
 
 def check_alien_hit_bottom(aliens, ai_settings):
-    """check if the alien has hit the bttom of the screen"""
+    """check if the alien has hit the bottom of the screen"""
     for alien in aliens:
         if alien.rect.bottom >= ai_settings.screen_height:
             #  print("fn : check_alien_hit_bottom | alien bottom coordinates" + str(alien.rect.bottom))
