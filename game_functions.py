@@ -4,6 +4,13 @@ from bullet import Bullet
 from alien import Alien
 from time import sleep
 
+def play_background_music(ai_settings):
+    pygame.mixer.music.load(ai_settings.background_music_location)
+    pygame.mixer.music.play(-1, 0.0)
+
+def play_pause_music(ai_settings):
+    pygame.mixer.Sound(ai_settings.pause_music_location).play()
+
 def fire_bullet(bullets,ai_settings,ship, screen):
     if len(bullets) < ai_settings.bullet_limit:
         new_bullet = Bullet(ship, screen, ai_settings)
@@ -33,6 +40,7 @@ def check_keydown_event(event, ship, screen, ai_settings, bullets, game_data):
     if event.key == pygame.K_p:
         print("Game Paused! ")
         game_data.set_game_inactive()
+        play_pause_music(ai_settings)
 
 
 def check_keyup_event(event, ship):

@@ -8,7 +8,9 @@ class Settings:
         self.screen_upper_limit = -15
         self.bg_color = (230, 230, 230)  # light grey
         self.screen_title = 'Alien Invasion'
-        # store the relative location of image files
+        # store the relative location of image files and background music
+        self.background_music_location = 'sound\\background_music.mp3'
+        self.pause_music_location = 'sound/pause.wav'
         self.image_file_locations = {'ship': 'images\\ship.bmp',
                                      'hunter': 'images\\hunter_small.png',
                                      'hunter_xl': 'images\\hunter.png',
