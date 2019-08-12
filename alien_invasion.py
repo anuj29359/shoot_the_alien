@@ -39,8 +39,8 @@ def run_game():
     explosions = Group()
 
     # create button object to start the game
-    msg = 'Start'
-    play_button = Button(screen, ai_settings, game_data, msg)
+
+    play_button = Button(screen, ai_settings, game_data, ai_settings.msg)
 
     # Create scoreboard instance
     scoreboard = Scoreboard(screen, ai_settings, ship, aliens, bullets, game_data)
@@ -48,7 +48,7 @@ def run_game():
     # start the main loop for the game
     while True:
         # watch for keyboard and mouse event.
-        gf.check_events(ship, ai_settings, bullets, screen, game_data, play_button, scoreboard)
+        gf.check_events(aliens,ship, ai_settings, bullets, screen, game_data, play_button, scoreboard)
 
         if game_data.is_game_active == True:
             """Check the status of is_game_active flag to determine when to end the game"""
