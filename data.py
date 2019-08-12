@@ -13,11 +13,13 @@ class Data:
         self.reset_data()
         # start the game in inactive state
         self.is_game_active = False
+        self.is_game_over = False
 
     def reset_data(self):
         """reset the game data that can change during runtime"""
         self.ship_left = self.ai_settings.life_limit
         self.score = 0
+
 
 
 
