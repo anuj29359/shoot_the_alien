@@ -148,8 +148,7 @@ class Ship(Sprite):
         self.ship_x = float(self.rect.centerx)
         self.ship_y = float(self.rect.bottom)
         print(self.rect.centerx, self.rect.bottom, self.ship_x, self.ship_y)
-        #play explosion sound
-        self.ship_explosion_sound.play()
+
 
     def blitme(self):
         """drew the ship at its current location"""
