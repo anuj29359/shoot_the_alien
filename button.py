@@ -23,13 +23,21 @@ class Button:
         # prep the text
         self.prep_msg(msg)
 
+    def check_button_width(self):
+        if self.msg_image_width > self.button_width:
+            self.button_width = self.msg_image_width + 30
+            self.rect = pygame.Rect(0, 0, self.button_width, self.button_height)
+            self.rect.center = self.screen_rect.center
+
     def prep_msg(self, msg):
         """msg needs to be prepped"""
         self.msg_image = self.font.render(msg, True, self.text_color, self.button_color)
         self.msg_image_rect = self.msg_image.get_rect()
         self.msg_image_rect.center = self.screen_rect.center
+        self.msg_image_width = self.msg_image_rect.width
 
     def draw_button(self):
         """draw button and then draw text_image on to of it"""
+        self.check_button_width()
         self.screen.fill(self.button_color, self.rect)
         self.screen.blit(self.msg_image, self.msg_image_rect)
